@@ -44,10 +44,12 @@ echo "运行调试版本..."
 ```
 + 把上面的 shell 制作成一个文件best_build.shell
 + 然后进行 chmod +x best_build.sh 
-+ 再在.zshrc 或者 bash 中 添加别名alias bb="~/Soft/VSCode/best_build.sh"  
++ 再在.zshrc 或者 bash 中 添加别名 alias bb="~/Soft/VSCode/best_build.sh"  
  这样就可以工程中运行bb命令优化编译输出，大概能减少一半以上的输出文件。
  
 ####  运行结束输出清理的代码
+1.编译优化的运行结束，再清理
+
 ```
 #!/bin/bash
 
@@ -90,9 +92,33 @@ echo "运行调试版本..."
 # 运行结束
 echo "运行结束，已执行清理。"
 ```
+2.不拥有编译优化，运行结束后清理
+```
+#!/bin/bash
+
+# 处理清理操作的函数
+cleanup() {
+    echo "执行 cargo clean..."
+    cargo clean
+}
+
+# 捕获 INT 信号（Ctrl+C）和 EXIT 事件
+trap cleanup INT EXIT
+
+# 正常执行 cargo run
+echo "执行 cargo run..."
+cargo run
+
+# 当 cargo run 执行完毕或被中断时，触发 cleanup
+echo "cargo run 结束，已执行清理。"
+```
 还是需要跟上面一样增加权限和别名。例如：
-alias brc="~/Soft/VSCode/build_run_clean.sh"
-这样才可以工程文件下使用brc命令，运行结束或者 ctrl+c 中断都可以清理输出。
+```
+alias brc="~/Soft/VSCode/build_run_clean.sh" 
+或者 
+alias rc="~/Soft/VSCode/run_clean.sh"
+```
+这样才可以工程文件下使用brc或rc命令，运行结束或者 ctrl+c 中断都可以清理输出。
 
 #### 对整个存放所有Rust的工程文件夹进行清理
 ```
